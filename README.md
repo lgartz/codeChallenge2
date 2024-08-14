@@ -15,4 +15,3 @@
 * En el actual código no está pero crearía servicio rest por red social y crearía objetos tipos input para cada red social, esto evita validar cosas como esta if (nonNull(socialMention.getFacebookAccount())) en el controlador, el controlador únicamente debería invocar el caso de uso.
 * Se crean constantes para los valores quemados.
 * Se evalúa que la entrada no sea nula.
-
