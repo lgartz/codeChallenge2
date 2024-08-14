@@ -8,6 +8,9 @@ import com.appgate.codetest.codeChallenge2.usecase.port.DBService;
 public class SocialMentionTwitterUseCase extends SocialMentionFactory {
 
     private static final String ANALYZED_TWEETS_TABLE = "analyzed_tweets";
+    private static final double TWITTER_HIGH_RISK_VALUE = -1;
+    private static final double TWITTER_MEDIUM_RISK_VALUE = -0.5d;
+    private static final double TWITTER_LOW_RISK_VALUE = 0.7d;
 
     public SocialMentionTwitterUseCase(DBService dbService) {
         this.dbService = dbService;
@@ -40,11 +43,11 @@ public class SocialMentionTwitterUseCase extends SocialMentionFactory {
 
     @Override
     protected String mapResponse(Double scoreSocial, String defaultResponse) {
-        if (scoreSocial >= -1 && scoreSocial <= -0.5d) {
+        if (scoreSocial >= TWITTER_HIGH_RISK_VALUE && scoreSocial <= TWITTER_MEDIUM_RISK_VALUE) {
             return "HIGH_RISK";
-        } else if (scoreSocial > -0.5d && scoreSocial < 0.7d) {
+        } else if (scoreSocial > TWITTER_MEDIUM_RISK_VALUE && scoreSocial < TWITTER_LOW_RISK_VALUE) {
             return "MEDIUM_RISK";
-        } else if (scoreSocial >= 0.7d) {
+        } else if (scoreSocial >= TWITTER_LOW_RISK_VALUE) {
             return "LOW_RISK";
         }
         return defaultResponse;

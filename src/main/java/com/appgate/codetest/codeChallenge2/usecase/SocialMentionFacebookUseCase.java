@@ -8,6 +8,8 @@ import com.appgate.codetest.codeChallenge2.usecase.port.DBService;
 public class SocialMentionFacebookUseCase extends SocialMentionFactory {
 
     private static final String ANALYZED_FB_TABLE = "analyzed_fb_posts";
+    private static final double FACEBOOK_HIGH_RISK_VALUE = -100d;
+    private static final double FACEBOOK_MEDIUM_RISK_VALUE = 50d;
 
     public SocialMentionFacebookUseCase(DBService dbService) {
         this.dbService = dbService;
@@ -26,10 +28,10 @@ public class SocialMentionFacebookUseCase extends SocialMentionFactory {
         if (socialMention.getMessage().contains("comments:")) {
             Double facebookCommentsScore = FacebookAnalyzer.calculateFacebookCommentsScore(
                     socialMention.getMessage().substring(socialMention.getMessage().indexOf("comments:")));
-            if (facebookCommentsScore < 50d)
-                facebookScore = Double.sum(facebookScore, -100d);
+            if (facebookCommentsScore < FACEBOOK_MEDIUM_RISK_VALUE)
+                facebookScore = Double.sum(facebookScore, FACEBOOK_HIGH_RISK_VALUE);
         }
-        if (facebookScore > -100)
+        if (facebookScore > FACEBOOK_HIGH_RISK_VALUE)
             facebookScore = FacebookAnalyzer.analyzePost(socialMention.getMessage(),socialMention.getFacebookAccount());
         return facebookScore;
     }
@@ -48,11 +50,11 @@ public class SocialMentionFacebookUseCase extends SocialMentionFactory {
 
     @Override
     protected String mapResponse(Double scoreSocial, String defaultResponse) {
-        if (scoreSocial == -100d)
+        if (scoreSocial == FACEBOOK_HIGH_RISK_VALUE)
             return "HIGH_RISK";
-        if (scoreSocial > -100d && scoreSocial < 50d)
+        if (scoreSocial > FACEBOOK_HIGH_RISK_VALUE && scoreSocial < FACEBOOK_MEDIUM_RISK_VALUE)
             return "MEDIUM_RISK";
-        if (scoreSocial >= 50d)
+        if (scoreSocial >= FACEBOOK_MEDIUM_RISK_VALUE)
             return "LOW_RISK";
         return defaultResponse;
     }
